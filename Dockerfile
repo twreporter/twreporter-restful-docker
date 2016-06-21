@@ -1,16 +1,19 @@
 FROM pypi/eve
 
 RUN groupadd user && useradd --create-home --home-dir /home/user -g user user
-
-COPY settings.py /settings.py
+COPY dump /dump
 
 RUN set -x \
     && apt-get update \
     && apt-get install -y --no-install-recommends curl ca-certificates \
     && apt-get install -y git \
-    && apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10 \
+    && apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv EA312927 \
+    && echo "deb http://repo.mongodb.org/apt/ubuntu trusty/mongodb-org/3.2 multiverse" | tee /etc/apt/sources.list.d/mongodb-org-3.2.list \
     && apt-get update \
-    && apt-get install -y mongodb mongodb-server
+    && touch /etc/init.d/mongod \
+    && chmod 755 /etc/init.d/mongod \
+    && apt-get install -y mongodb-org-server=3.2.7 \
+    && apt-get install -y mongodb-org=3.2.7
 
 RUN buildDeps=' \
     gcc \
@@ -30,5 +33,5 @@ RUN buildDeps=' \
 EXPOSE 8080
 EXPOSE 27017
 
-CMD ["service", "mongod start"]
+CMD ["mongod","--port 27017"]
 CMD ["python", "/tr-projects-rest/server.py"]
