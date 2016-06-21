@@ -9,10 +9,8 @@ RUN set -x \
     && apt-get install -y --no-install-recommends curl ca-certificates \
     && apt-get install -y git \
     && apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10 \
-    && echo "deb http://repo.mongodb.org/apt/ubuntu "$(lsb_release -sc)"/mongodb-org/3.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.0.list \
     && apt-get update \
-    && apt-get install mongodb-org \
-    && apt-get install -y mongodb-org mongodb-org-server mongodb-org-shell mongodb-org-mongos mongodb-org-tools 
+    && apt-get install -y mongodb mongodb-server
 
 RUN buildDeps=' \
     gcc \
@@ -30,5 +28,7 @@ RUN buildDeps=' \
     && cp /tr-projects-rest/settings.sample.py /tr-projects-rest/settings.py
 
 EXPOSE 8080
-CMD ["service", "mongod"]
+EXPOSE 27017
+
+CMD ["service", "mongod start"]
 CMD ["python", "/tr-projects-rest/server.py"]
