@@ -19,7 +19,7 @@ RUN buildDeps=' \
     && pip install --upgrade pip \
     && git clone https://github.com/twreporter/tr-projects-rest.git \
     && cd /tr-projects-rest/ \
-    && git checkout keystone \
+    && git checkout master \
     && pip install flask \
     && pip install Eve \
     && cp /settings.py /tr-projects-rest/settings.py
